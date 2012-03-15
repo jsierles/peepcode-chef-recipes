@@ -1,9 +1,7 @@
-require_recipe "nginx"
-require_recipe "unicorn"
+include_recipe "nginx"
+include_recipe "unicorn"
 
-package "build-essential"
-package "git-core"
-package "libsqlite3-dev"    
+package "libsqlite3-dev"
 
 gem_package "bundler"
 
@@ -17,9 +15,8 @@ directory common[:app_root]+"/current" do
   owner "vagrant"
 end
 
-["config", "log", "tmp", "sockets", "pids"].each do |dir|
+%w(config log tmp sockets pids).each do |dir|
   directory "#{common[:app_root]}/shared/#{dir}" do
-    owner "vagrant"
     recursive true
     mode 0755
   end
@@ -31,7 +28,7 @@ template "#{node[:unicorn][:config_path]}/#{common[:name]}.conf.rb" do
   variables common
 end
 
-nginx_config_path = "#{common[:app_root]}/shared/config/nginx.conf"
+nginx_config_path = "/etc/nginx/sites-available/#{common[:name]}.conf"
 
 template nginx_config_path do
   mode 0644
@@ -42,5 +39,5 @@ end
 
 nginx_site "kayak" do
   config_path nginx_config_path
-  action [:create, :enable]
+  action :enable
 end
