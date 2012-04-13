@@ -12,10 +12,6 @@ directory common[:app_root] do
   recursive true
 end
 
-# directory common[:app_root]+"/current" do
-#   owner "vagrant"
-# end
-
 directory common[:app_root]+"/shared" do
   owner "vagrant"
 end
